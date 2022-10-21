@@ -13,19 +13,60 @@ Created a new project in `OpenRefine` with the given [dataset](../assets/openref
 Kept the **default settings**, except:
 - Try to parse text cells as numbers
 
-Once created, there are in total **27876 rows**.
+Once created, there are in total **27 876 rows**.
 
-### Use the facets to familiarize with the data
+### Familiarize with the data
 
-#### 1.1) How many records have empty fields (if any) ?
+#### Country
 
-#### 1.2) How many records have invalid fields (if any) ?
+Since this is a free-format field (i.e. may contain any text input), there are a lot of variants of a same country, differing by letter case, by a whitespace or by one beeing an acronym of another. For instance, for the United States, following values may be found: "USA", "US", "U.S.", "us" etc. Thus, generating **duplication** and **inconsistencies**. 
 
-#### 1.3) How many records have duplicated fields (if any) ?
+#### US States
 
-#### 1.4) What other inconsistencies are there ?
+Due to the fact that this column only gets values from a **white list** of USA, each state is represented by a single value.
 
-#### 1.5) Reflect also on why these inconsistencies happened
+Since, this is a multiple choice field, the states are separated by a comma followed by a whitespace. However, may contain blank values.
+
+#### City
+
+As for the "Country" column, multiple variants of a same city may be encountered. Thus, generating **duplication** and **inconsistencies**. 
+
+Among the people working in the US, that is those who have mentioned at least one state, there are some who have provided a city that is not located in neither of these states. Thus, generating **inconsistencies**. 
+
+#### Annual Salary
+
+The vast majority of respondents (20302 vs 7574) entered a number (**invalid format**) separating thousands by a comma, which prevented it being parsed as a number by OpenRefine at project's creation. These values should be pre-processed and transformed to numbers.
+
+There are **extremely small numbers** or **outliers** (around 100-200 records depending on the threshold and the currency, in general these are amounts below 1000 including **zeros**) for an annual income. While these are valid values for this column, that might still slightly **bias** data analysis' results in the future.
+
+#### Income Currency
+
+There are in total 4 people who have mentioned "Other" as their income currency, however they left the next column as blank. Thus, generating **inconsistencies**. 
+
+In contrast, there are as well people (52) who have mentioned an income currency from the proposed list, but in addition filled up the next column, hence either duplicating their answer or providing some unnecessary information. Thus, generating **duplication** and/or **inconsistencies**. 
+
+#### Gender and Race
+
+Despite the Gender and Race being values originating from a **white list**, these fields may be left blank. However, in both questions, there is an option to abstain from answering. Thus, blank values may be considered as **invalid** for these fields and transformed to the dedicated value (that is "Prefer not to answer").
+
+### 1.1) How many records have empty fields (if any) ?
+
+To find how many records have **at least 1** empty field, we can proceed as follows:
+
+1) Apply the "Blank records per column" facet on the "All" column
+2) Among the results, choose the maximum value.
+
+In this case, the "Other Currency" column has the maximum empty records, that is **27 676**.
+
+### 1.2) How many records have invalid fields (if any) ?
+
+
+
+### 1.3) How many records have duplicated fields (if any) ?
+
+### 1.4) What other inconsistencies are there ?
+
+### 1.5) Reflect also on why these inconsistencies happened
 
 Task 2 - Missing values
 ---
