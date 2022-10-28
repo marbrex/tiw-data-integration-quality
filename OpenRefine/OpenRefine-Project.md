@@ -11,7 +11,7 @@ Task 1 - Explore the dataset
 Created a new project in `OpenRefine` with the given [dataset](../assets/openrefine-dataset.csv) downloaded from [Moodle](https://moodle.univ-lyon1.fr/course/view.php?id=506&section=5#tabs-tree-start).
 
 Kept the **default settings**, except:
-- Try to parse text cells as numbers
+- "Try to parse text cells as numbers" checked
 
 Once created, there are in total **27 876 rows**.
 
@@ -19,7 +19,21 @@ Once created, there are in total **27 876 rows**.
 
 #### Country
 
-Since this is a free-format field (i.e. may contain any text input), there are a lot of variants of a same country, differing by letter case, by a whitespace or by one beeing an acronym of another. For instance, for the United States, following values may be found: "USA", "US", "U.S.", "us" etc. Thus, generating **duplication** and **inconsistencies**. 
+Since this is a free-format field (i.e. may contain any text input), there are a lot of variants of a same country, differing by letter case, by a whitespace or by one beeing an acronym of another. For instance, for the United States, following values may be found: "`USA`", "`US`", "`U.S.`", "`us`" etc. Thus, generating **duplication** and **inconsistencies** in the dataset. 
+
+#### Industry
+
+In the survey, there is an option "Other". If checked, it becomes possible to fill in a custom value. Thus, just as for "Country" field, there are a lot of similar values meaning the same thing, but differing in the way they were spelt. This generates **duplication** and **inconsistencies**.
+
+For the same reason ("other" checked), this field may be left blank. (71 blank values)
+
+#### Job title
+
+As for the "Country" column, multiple variants of a same job title may be encountered. Thus, this generates **duplication** and **inconsistencies**.
+
+In addition, there are some incoherent/**invalid** values for this field. For instance, you may see the following value " `-` " given by 2 people, and even this one " `"mum" ;)` ".
+
+But fortunately, this column does not contain blank values due to the fact that the values originate from a mandatory field.
 
 #### US States
 
@@ -35,9 +49,9 @@ Among the people working in the US, that is those who have mentioned at least on
 
 #### Annual Salary
 
-The vast majority of respondents (20302 vs 7574) entered a number (**invalid format**) separating thousands by a comma, which prevented it being parsed as a number by OpenRefine at project's creation. These values should be pre-processed and transformed to numbers.
+The vast majority of respondents (*20 302* vs *7 574*) entered a number (**invalid format**) separating thousands by a comma, which prevented it being parsed as a number by OpenRefine at project's creation. These values should be pre-processed and transformed to numbers.
 
-There are **extremely small numbers** or **outliers** (around 100-200 records depending on the threshold and the currency, in general these are amounts below 1000 including **zeros**) for an annual income. While these are valid values for this column, that might still slightly **bias** data analysis' results in the future.
+There are some **extremely small numbers** for an annual income, or in other words, **outliers** (around 100-200 records depending on the threshold and the currency, in general these are amounts below 1000 including **zeros**). While these are valid values for this column, that might still slightly **bias** data analysis' results in the future.
 
 #### Income Currency
 
