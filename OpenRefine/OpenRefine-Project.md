@@ -38,7 +38,7 @@ For the same reason, this field may be left blank (*71* blank values), but these
 As for the "Country" column, multiple variants of a same job title may be encountered. Thus, this generates **duplication** and **inconsistencies**.
 
 ##### Incoherent / Invalid values
-In addition, there are some incoherent/**invalid** values for this field. For instance, you may see the following value " `-` " given by *2* people, and even this one " `"mum" ;)` ". You may also encounter some `na`, `n\a` values standing for "Not Applicable".
+In addition, there are some incoherent/**invalid** values for this field. For instance, you may see the following value " `-` " giv zxzen by *2* people, and even this one " `"mum" ;)` ". You may also encounter some `na`, `n\a` values standing for "Not Applicable".
 
 ##### Other notes
 This column does not contain blank values due to the fact that the values originate from a mandatory field.
@@ -56,6 +56,14 @@ As for the "Country" column, multiple variants of a same city may be encountered
 
 ##### Inconsistencies
 Among the people working in the US, that is those who have mentioned at least one state, there are some who have provided a city that is not located in neither of these states. Thus, generating **inconsistencies**. 
+
+##### Incoherent / Invalid Values
+There are a lot of incoherent / invalid values for this column, for example:
+- Sequence of unrelated characters: whitespaces ("` `"), dashes ("`-`"), dots ("`.`"), letters ("Xxxx") etc.
+- Blur descriptions ("a large city", "a small city", etc.)
+- Not cities ("UK", "USA")
+- Variants of "Not Applicable" ("N/A", "na", etc.)
+- ZIP codes
 
 #### Annual Salary
 
@@ -79,7 +87,7 @@ There are some **extremely small numbers** for an annual income, or in other wor
   
   > There is as well *1* "`Rupees`", not exactly specified if it is Indonesian, Sri Lankan or something else.. Left the value as it is.
 
-  **Cleaning**
+  **Cleaning:**
   1) Cluster values using different methods and merge found groups. Repeat until no change.
   2) Perform a manual merge to a few remaining values.
   3) Merge "AUD" and "NZD" as "AUD/NZD".
@@ -101,7 +109,7 @@ There are some **extremely small numbers** for an annual income, or in other wor
 
 - In contrast, there are as well people (*52*) who have mentioned an income currency from the proposed list, but in addition filled up the next column, hence either duplicating their answer or providing some unnecessary information. Thus, generating **duplication** and/or **inconsistencies**. 
 
-  **Cleaning**
+  **Cleaning:**
   This issue can be solved by:
   1) Filter currency field by `value != 'Other'` (gives 52 records)
   2) Filter non-null values in the target* field by `!isBlank(value)`
@@ -113,9 +121,15 @@ There are some **extremely small numbers** for an annual income, or in other wor
 ##### Incoherent / Invalid values
 Despite the Gender and Race being values originating from a **white list**, these fields may be left blank. However, in both questions, there is an option to abstain from answering. Thus, blank values may be considered as **invalid** for these fields and transformed to the dedicated value (that is "Prefer not to answer").
 
+Also, for Gender column, there is *1* duplicated record for "Prefer not to answer", that can be changed to a more frequent value that is "Other or prefer not to answer".
+
+**Cleaning:**
+- Using Facets or Transform function, replace blank values by "Prefer not to answer".
+- For Gender column, merge 2 values meaning the same thing, i.e. "Prefer not to answer".
+
 ### 1.1) How many records have empty fields (if any) ?
 
-To find how many records have **at least 1** empty field, we can proceed as follows:
+To find the total amount of how many records have **at least 1** empty field, we can proceed as follows:
 
 1) Apply the "Blank records per column" facet on the "All" column
 2) Among the results, choose the maximum value.
@@ -124,7 +138,7 @@ In this case, the "Other Currency" column has the maximum empty records, that is
 
 ### 1.2) How many records have invalid fields (if any) ?
 
-Since the concrete explanation of what values can be considered as invalid was not given, values are labeled as invalid based on different criterias explained above (In the "Familiarize with the data" section) and depending on its field.
+Since the concrete explanation of what values can be considered as invalid was not given, values are labeled as invalid **based on different criterias explained above** (In the "Familiarize with the data" section) and depending on its field.
 
 - #### Annual Salary:
   - Invalid number format (*20 302* records)
