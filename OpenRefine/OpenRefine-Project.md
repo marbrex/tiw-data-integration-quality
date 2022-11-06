@@ -15,12 +15,28 @@ Kept the **default settings**, except:
 
 Once created, there are in total ***27 876* rows**.
 
-### Familiarize with the data
+### Explore & Clean the dataset
 
 #### Country
 
 ##### Duplicates
-Since this is a free-format field (i.e. may contain any text input), there are a lot of variants of a same country, differing by letter case, by a whitespace or by one beeing an acronym of another. For instance, for the United States, following values may be found: "`USA`", "`US`", "`U.S.`", "`us`" etc. Thus, generating **duplication** and **inconsistencies** in the dataset. 
+Since this is a free-format field (i.e. may contain any text input), there are a lot of variants of a same country, differing by letter case, by a whitespace or by one beeing an acronym of another. For instance, for the United States, following values may be found: "`USA`", "`US`", "`U.S.`", "`us`" etc. Thus, generating **duplication** and **inconsistencies** in the dataset.
+
+**Cleaning:**
+Using Cluster function, merge values using following methods in order:
+1) Key collision, Fingerprint (*54* clusters, *27 547* rows modified)
+> Put same resulting value for same countries
+2) Key collision, 2-gram fingerprint
+3) Nearest neighbour, levenshtein with different hyperparameters (for example, we can decrement "block chars" parameter by 1 and starting at 6)
+
+##### Blank values
+There are some blank values. Using facets, replaced them with "Prefer not to answer" value.
+
+##### Incoherent / Invalid values
+Some respondents mentionned incoherent information, for example they entered something suitable for other column ("$2,175.84/year is deducted for benefits" value is more suitable for Income column)
+
+**Cleaning:**
+In the given example above, move that info in the more suitable column if it's empty. Proceed in the same manner for other values. For these records, we could leave values in the Country column as blank rather than assigning "Prefer not to answer" (it would be more logical, because they just filled up a wrong field without paying attention), but since they're too small-numbered and for the consistency sake, "Prefer not to answer" has been assigned to these cells.
 
 #### Industry
 
@@ -30,7 +46,7 @@ In the survey, there is an option "Other". If checked, it becomes possible to fi
 ##### Blank values
 For the same reason, this field may be left blank (*71* blank values), but these records remain **valid**, because they represent the "Other" option and express the respondent's unwillingness to detail his answer.
 
-> For a simpler data analysis in the future, these blank values may be replaced with string "Other".
+> For a simpler data analysis in the future, these blank values may be replaced with string "Other" or "Prefer not to answer".
 
 #### Job title
 
@@ -43,6 +59,8 @@ In addition, there are some incoherent/**invalid** values for this field. For in
 ##### Other notes
 This column does not contain blank values due to the fact that the values originate from a mandatory field.
 
+Trimmed values using the not null facet and then transforming all cells with `value.trim()` (GREL).
+
 #### US States
 
 Due to the fact that this column only gets values from a **white list** of USA, each state is represented by a single value.
@@ -53,6 +71,14 @@ Since, this is a multiple choice field, the states are separated by a comma foll
 
 ##### Duplicates
 As for the "Country" column, multiple variants of a same city may be encountered. Thus, generating **duplication** and **inconsistencies**. 
+
+**Cleaning:**
+Using Cluster function, merge values using following methods in order:
+1) Key collision, Fingerprint (*729* clusters, *22 820* cells modified)
+2) Key collision, 2-gram fingerprint (*30* clusters, *697* cells modified).
+ > For some values meaning the same thing, manually assign their resulting values of merge. (for instance, merge "`-`" and "`xxx`" into "`-`" or "Prefer not to answer")
+ 3) At this point, **automatic clustering makes errors** and should not be used. Perform **manual clustering** using different methods (for example, "Key collision, 1-gram fingerprint" and "Nearest neighbour, levenshtein").
+ 4) Perform some **manual filtering with facets** (for example using `contains` function) in order to find same values. Merge them.
 
 ##### Inconsistencies
 Among the people working in the US, that is those who have mentioned at least one state, there are some who have provided a city that is not located in neither of these states. Thus, generating **inconsistencies**. 
@@ -70,6 +96,7 @@ There are a lot of incoherent / invalid values for this column, for example:
 ##### Invalid number format
 The vast majority of respondents (*20 302* vs *7 574*) entered a number (in **invalid format**) separating thousands by a comma, which prevented it being parsed as a number by OpenRefine at project's creation. These values should be pre-processed and transformed to numbers.
 
+**Cleaning:**
 This problem can be solved by transforming the values as follows (GREL):
 ```python
 value.replaceChars(',', '').toNumber()
@@ -127,6 +154,15 @@ Also, for Gender column, there is *1* duplicated record for "Prefer not to answe
 - Using Facets or Transform function, replace blank values by "Prefer not to answer".
 - For Gender column, merge 2 values meaning the same thing, i.e. "Prefer not to answer".
 
+#### "Additional context" columns
+Trimmed these 2 columns as follows (directly via transform, GREL):
+```python
+if(value!=null, value.trim(), value)
+```
+Could have also use the not null facet first and then trim cells.
+
+The blank values might be left as it is.
+
 ### 1.1) How many records have empty fields (if any) ?
 
 To find the total amount of how many records have **at least 1** empty field, we can proceed as follows:
@@ -138,33 +174,45 @@ In this case, the "Other Currency" column has the maximum empty records, that is
 
 ### 1.2) How many records have invalid fields (if any) ?
 
-Since the concrete explanation of what values can be considered as invalid was not given, values are labeled as invalid **based on different criterias explained above** (In the "Familiarize with the data" section) and depending on its field.
-
-- #### Annual Salary:
-  - Invalid number format (*20 302* records)
-- 
+Since the concrete explanation of what values can be considered as invalid was not given, values are labeled as invalid **based on different criterias explained** [**above**](#Familiarize%20with%20the%20data). (In the "Familiarize with the data" section) and depending on its field.
 
 ### 1.3) How many records have duplicated fields (if any) ?
 
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+
 ### 1.4) What other inconsistencies are there ?
 
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+
 ### 1.5) Reflect also on why these inconsistencies happened
+
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
 
 Task 2 - Missing values
 ---
 
 ### 2.1) Explain and motivate how you are handling the missing values
 
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+
 Task 3 - Duplicate values
 ---
 
 ### 3.1) Explain and motivate how you are handling the duplicate values
+
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
 
 Task 4 - The inconsistencies
 ---
 
 ### 4.1) Fix the inconsistencies
 
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+
 Task 5 - Improve the dataset
 ---
 
+See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+
+### Multi-valued cells
+There are some columns containing a list of values (for example Race), we could **split** these cells into multiple **records**.
