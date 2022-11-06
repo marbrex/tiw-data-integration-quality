@@ -7,6 +7,7 @@ Task 1 - Explore the dataset
 ---
 
 ### Import the data in OpenRefine
+---
 
 Created a new project in `OpenRefine` with the given [dataset](../assets/openrefine-dataset.csv) downloaded from [Moodle](https://moodle.univ-lyon1.fr/course/view.php?id=506&section=5#tabs-tree-start).
 
@@ -18,6 +19,7 @@ Once created, there are in total ***27 876* rows**.
 ### Explore & Clean the dataset
 
 #### Country
+---
 
 ##### Duplicates
 Since this is a free-format field (i.e. may contain any text input), there are a lot of variants of a same country, differing by letter case, by a whitespace or by one beeing an acronym of another. For instance, for the United States, following values may be found: "`USA`", "`US`", "`U.S.`", "`us`" etc. Thus, generating **duplication** and **inconsistencies** in the dataset.
@@ -41,6 +43,7 @@ Some respondents mentionned incoherent information, for example they entered som
 In the given example above, move that info in the more suitable column if it's empty. Proceed in the same manner for other values. For these records, we could leave values in the Country column as blank rather than assigning "Prefer not to answer" (it would be more logical, because they just filled up a wrong field without paying attention), but since they're too small-numbered and for the consistency sake, "Prefer not to answer" has been assigned to these cells.
 
 #### Industry
+---
 
 ##### Duplicates
 In the survey, there is an option "Other". If checked, it becomes possible to fill in a custom value. Thus, just as for "Country" field, there are a lot of similar values meaning the same thing, but differing in the way they were spelt. This generates **duplication** and **inconsistencies**.
@@ -51,6 +54,7 @@ For the same reason, this field may be left blank (*71* blank values), but these
 > For a simpler data analysis in the future, these blank values may be replaced with string "Other" or "Prefer not to answer".
 
 #### Job title
+---
 
 ##### Duplicates
 As for the "Country" column, multiple variants of a same job title may be encountered. Thus, this generates **duplication** and **inconsistencies**.
@@ -64,6 +68,7 @@ This column does not contain blank values due to the fact that the values origin
 Trimmed values using the not null facet and then transforming all cells with `value.trim()` (GREL).
 
 #### US States
+---
 
 Due to the fact that this column only gets values from a **white list** of USA, each state is represented by a single value.
 
@@ -80,6 +85,7 @@ There are people (*172*) who mentionned USA as their country, but did not mentio
 Blank values might be transformed to "Not Applicable" or left blank.
 
 #### City
+---
 
 ##### Duplicates
 As for the "Country" column, multiple variants of a same city may be encountered. Thus, generating **duplication** and **inconsistencies**. 
@@ -106,6 +112,7 @@ There are a lot of incoherent / invalid values for this column, for example:
 > Some respondents mentionned that their city is too small, hence they cannot specify it while remaining anonymous, otherwise it would give out their identity. These cells were transformed to "Prefer not to answer".
 
 #### Annual Salary
+---
 
 ##### Invalid number format
 The vast majority of respondents (*20 302* vs *7 574*) entered a number (in **invalid format**) separating thousands by a comma, which prevented it being parsed as a number by OpenRefine at project's creation. These values should be pre-processed and transformed to numbers.
@@ -120,6 +127,7 @@ value.replaceChars(',', '').toNumber()
 There are some **extremely small numbers** for an annual income, or in other words, **outliers** (around *100*-*200* records depending on the threshold and the currency, in general these are amounts below 1000 including **zeros**). While these are valid values for this column, that might still slightly **bias** data analysis' results in the future.
 
 #### Income Currency
+---
 
 ##### Inconsistencies and/or Duplication
 - Given "Other" as income currency, there are some **duplicate** currencies mentionned in "If other, ..." column, despite being present in the proposed list. For instance, *8* "`USD`", *1* "`US Dollar`" and even *1* "`American Dollars`".
@@ -158,6 +166,7 @@ There are some **extremely small numbers** for an annual income, or in other wor
   \* **Target:** "if other, ..." column
 
 #### Additional monetary compensation
+---
 
 ##### Blank values
 Blank values could be replaced with zeros.
@@ -165,6 +174,7 @@ Blank values could be replaced with zeros.
 > **Possible improvement:** For these blank values, we might put "No benefits or prefer not to answer" in the "Income additional context" column.
 
 #### Gender and Race
+---
 
 ##### Incoherent / Invalid values
 Despite the Gender and Race being values originating from a **white list**, these fields may be left blank. However, in both questions, there is an option to abstain from answering. Thus, blank values may be considered as **invalid** for these fields and transformed to the dedicated value (that is "Prefer not to answer").
@@ -176,16 +186,19 @@ Also, for Gender column, there is *1* duplicated record for "Prefer not to answe
 - For Gender column, merge 2 values meaning the same thing, i.e. "Prefer not to answer".
 
 #### "Additional context" columns
+---
+
 Trimmed these 2 columns as follows (directly via transform, GREL):
 ```python
 if(value!=null, value.trim(), value)
 ```
 Could have also use the not null facet first and then trim cells.
 
-### Invalid values
+##### Invalid values
 Removed line breaks in text of both columns, otherwise would result in errors on exporting/importing the dataset as CSV.
 
 #### Conditional columns (If ...)
+---
 
 ##### Blank values
 Blank values might be transformed to "Not Applicable" or left blank.
