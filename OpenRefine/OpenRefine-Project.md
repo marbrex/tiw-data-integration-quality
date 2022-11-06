@@ -35,6 +35,8 @@ There are some blank values. Using facets, replaced them with "Prefer not to ans
 ##### Incoherent / Invalid values
 Some respondents mentionned incoherent information, for example they entered something suitable for other column ("$2,175.84/year is deducted for benefits" value is more suitable for Income column)
 
+> Among the values in this column, there is some "`America`"s. These might be USA as well as Canada or any other country in America. Nevertheless, because the term "america" is **most often** referred to the USA, these values have been transformed to "`USA`".
+
 **Cleaning:**
 In the given example above, move that info in the more suitable column if it's empty. Proceed in the same manner for other values. For these records, we could leave values in the Country column as blank rather than assigning "Prefer not to answer" (it would be more logical, because they just filled up a wrong field without paying attention), but since they're too small-numbered and for the consistency sake, "Prefer not to answer" has been assigned to these cells.
 
@@ -67,6 +69,16 @@ Due to the fact that this column only gets values from a **white list** of USA, 
 
 Since, this is a multiple choice field, the states are separated by a comma followed by a whitespace. However, may contain blank values.
 
+##### Inconsistencies
+There are people (*172*) who mentionned USA as their country, but did not mentionned a state. These values should be transformed to "Prefer not to answer".
+
+> There are some records, that do not make sense because of inconsistent information given. For example this one:
+> ![](../assets/inconsistent-location.png)
+> We cannot do much about it, since every column contradicts others.
+
+##### Blank values
+Blank values might be transformed to "Not Applicable" or left blank.
+
 #### City
 
 ##### Duplicates
@@ -90,6 +102,8 @@ There are a lot of incoherent / invalid values for this column, for example:
 - Not cities ("UK", "USA")
 - Variants of "Not Applicable" ("N/A", "na", etc.)
 - ZIP codes
+
+> Some respondents mentionned that their city is too small, hence they cannot specify it while remaining anonymous, otherwise it would give out their identity. These cells were transformed to "Prefer not to answer".
 
 #### Annual Salary
 
@@ -143,6 +157,13 @@ There are some **extremely small numbers** for an annual income, or in other wor
   3) Unset the values in the target* by assigning `null`
   \* **Target:** "if other, ..." column
 
+#### Additional monetary compensation
+
+##### Blank values
+Blank values could be replaced with zeros.
+
+> **Possible improvement:** For these blank values, we might put "No benefits or prefer not to answer" in the "Income additional context" column.
+
 #### Gender and Race
 
 ##### Incoherent / Invalid values
@@ -161,7 +182,13 @@ if(value!=null, value.trim(), value)
 ```
 Could have also use the not null facet first and then trim cells.
 
-The blank values might be left as it is.
+### Invalid values
+Removed line breaks in text of both columns, otherwise would result in errors on exporting/importing the dataset as CSV.
+
+#### Conditional columns (If ...)
+
+##### Blank values
+Blank values might be transformed to "Not Applicable" or left blank.
 
 ### 1.1) How many records have empty fields (if any) ?
 
@@ -215,4 +242,15 @@ Task 5 - Improve the dataset
 See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 ### Multi-valued cells
-There are some columns containing a list of values (for example Race), we could **split** these cells into multiple **records**.
+There are some columns containing a list of values (Race, US States), they could be **split** into multiple **rows**.
+
+**For Race column:**
+1) Before splitting, we have to replace commas in "Hispanic, Latino, or Spanish origin" with a different character, since this entire sentence is one option and splitting without replacing them would result in a wrong splitting. Transform with GREL:
+```python
+value.replace('Hispanic, Latino, or Spanish origin', 'Hispanic; Latino; or Spanish origin')
+```
+2) Split the multi-valued cell by the comma ("`,`") character.
+3) Trim whitespaces
+4) (Optional) Put back commas
+
+After splitting: ***29 348*** **rows**
