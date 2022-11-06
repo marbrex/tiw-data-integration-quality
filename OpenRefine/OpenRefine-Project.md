@@ -56,7 +56,7 @@ For the same reason, this field may be left blank (*71* blank values), but these
 As for the "Country" column, multiple variants of a same job title may be encountered. Thus, this generates **duplication** and **inconsistencies**.
 
 ##### Incoherent / Invalid values
-In addition, there are some incoherent/**invalid** values for this field. For instance, you may see the following value " `-` " giv zxzen by *2* people, and even this one " `"mum" ;)` ". You may also encounter some `na`, `n\a` values standing for "Not Applicable".
+In addition, there are some incoherent/**invalid** values for this field. For instance, you may see the following value " `-` " given by *2* people, and even this one " `"mum" ;)` ". You may also encounter some `na`, `n\a` values standing for "Not Applicable".
 
 ##### Other notes
 This column does not contain blank values due to the fact that the values originate from a mandatory field.
