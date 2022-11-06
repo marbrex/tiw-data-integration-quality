@@ -174,45 +174,45 @@ In this case, the "Other Currency" column has the maximum empty records, that is
 
 ### 1.2) How many records have invalid fields (if any) ?
 
-Since the concrete explanation of what values can be considered as invalid was not given, values are labeled as invalid **based on different criterias explained** [**above**](#Familiarize%20with%20the%20data). (In the "Familiarize with the data" section) and depending on its field.
+Since the concrete explanation of what values can be considered as invalid was not given, values are labeled as invalid **based on different criterias explained** [**above**](#Explore%20&%20Clean%20the%20dataset). (In the "Familiarize with the data" section) and depending on its field.
 
 ### 1.3) How many records have duplicated fields (if any) ?
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 ### 1.4) What other inconsistencies are there ?
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 ### 1.5) Reflect also on why these inconsistencies happened
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 Task 2 - Missing values
 ---
 
 ### 2.1) Explain and motivate how you are handling the missing values
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 Task 3 - Duplicate values
 ---
 
 ### 3.1) Explain and motivate how you are handling the duplicate values
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 Task 4 - The inconsistencies
 ---
 
 ### 4.1) Fix the inconsistencies
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 Task 5 - Improve the dataset
 ---
 
-See the [Data Explore section](#Familiarize%20with%20the%20data) above.
+See the [Data Explore section](#Explore%20&%20Clean%20the%20dataset) above.
 
 ### Multi-valued cells
 There are some columns containing a list of values (for example Race), we could **split** these cells into multiple **records**.
