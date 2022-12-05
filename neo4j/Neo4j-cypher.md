@@ -68,7 +68,7 @@ Le diagramme créé avec l'outil [Arrows.App](https://arrows.app):
 ## Les requêtes intra-pangenomiques
 ---
 
-### 1)
+### Requête 1
 
 ```cypher
 MATCH (pg:Pangenome)<-[:IS_IN_PANGENOME]-(f:Family)
@@ -81,7 +81,7 @@ RETURN pg.name as Nom, count(f) as Count
 |Enterobacter.cloacae   |110  |
 |Acinetobacter.baumannii|92   |
 
-### 2)
+### Requête 2
 
 ```cypher
 MATCH (pg:Pangenome)<-[:IS_IN_PANGENOME]-(f:Family)-[:HAS_PARTITION]->(p:Partition)
@@ -94,7 +94,7 @@ RETURN pg.name as Nom, count(f) as Count
 |"Acinetobacter.baumannii"|77   |
 |"Enterobacter.cloacae"   |88   |
 
-### 3)
+### Requête 3
 
 ```cypher
 MATCH (s:Spot)<-[:IS_IN_SPOT]-(n:RGP)<-[:IS_IN_RGP]-(g:Gene)-[:IS_IN_FAMILY]->(f:Family)
@@ -111,19 +111,19 @@ Cette requête retourne *1376* tuples, dont les 3 premiers vous sont donnés ci-
 |CP020089.1_RGP_0     |1    |135    |
 | ... | ... | ... |
 
-### 4)
+### Requête 4
 
 ```cypher
 
 ```
 
-### 5)
+### Requête 5
 
 ```cypher
 
 ```
 
-### 6)
+### Requête 6
 
 ```cypher
 
@@ -132,29 +132,107 @@ Cette requête retourne *1376* tuples, dont les 3 premiers vous sont donnés ci-
 ## Les requêtes inter-pangenomiques
 ---
 
-### 1)
+### Requête 1
 
 ```cypher
-
+MATCH (p:Pangenome)<-[:IS_IN_PANGENOME]-(f:Family)-[:IS_SIMILAR]-(f2:Family)-[:HAS_PARTITION]->(part:Partition)
+RETURN DISTINCT p.name as Species,
+       f2.name as Similar_Family,
+       part.partition as Partition
+ORDER BY Species
 ```
 
-### 2)
+Retourne ***10 979* tuples**, dont les *3 premiers* vous sont affichés ci-dessous:
+
+|Species                |Similar_Family|Partition |
+|-----------------------|--------------|----------|
+|Acinetobacter.baumannii|AXA63_RS14360 |persistent|
+|Acinetobacter.baumannii|AB895_RS17625 |cloud     |
+|Acinetobacter.baumannii|AUO97_RS01825 |shell     |
+| ... | ... | ... |
+
+### Requête 2
+
+![](../assets/inter-pangen-similar-families-2.png)
+<p style="text-align: center;"><i>Le sous-graphe que l'on cherche</i></p>
 
 ```cypher
-
+MATCH (f1:Family)-[:IS_SIMILAR]-(f2:Family)
+MATCH (p1:Pangenome)<-[:IS_IN_PANGENOME]-(f1)-[:IS_IN_MODULE]->(m1:Module)
+MATCH (p2:Pangenome)<-[:IS_IN_PANGENOME]-(f2)-[:IS_IN_MODULE]->(m2:Module)
+WHERE f1<>f2 AND p1<>p2
+RETURN f1.name as Family1,
+       f2.name as Family2,
+       count(f1.name) as Count1,
+       count(f2.name) as Count2,
+       m1.name as Module1,
+       m2.name as Module2
+ORDER BY Family1, Family2, Module1, Module2
 ```
 
-### 3)
+Cette requête retourne ***90* tuples**, dont les *3 premiers* vous sont donnés ci-dessous:
+
+|Family1        |Family2                 |Count1        |Count2        |Module1|Module2|
+|---------------|------------------------|--------------|--------------|-------|-------|
+|A388_RS01365   |GCA_002982195.1_CDS_0607|1             |1             |177    |40     |
+|A388_RS01385   |GCA_002278355.1_CDS_3234|1             |1             |178    |246    |
+|A388_RS18445   |GCA_013376815.1_CDS_5276|1             |1             |175    |53     |
+| ... | ... | ... | ... | ... | ... |
+
+L'attribut `Count` est toujours *1*, car chaque nœud de type **Family** est uniquement dans un seule **Module**, cela peut être vérifié avec la requête suivante, qui ne retourne aucun résultat.
 
 ```cypher
-
+MATCH (f:Family)-[:IS_IN_MODULE]->(m:Module)
+WITH *, count(m.name) as count
+WHERE count > 1
+RETURN f.name as Name, count
+ORDER BY Name
 ```
 
-### 4)
+### Requête 3
 
 ```cypher
-
+MATCH (f1:Family)-[:IS_SIMILAR]-(f2:Family)
+MATCH (f1)-[:IS_IN_PANGENOME]->(p1:Pangenome)
+MATCH (f2)-[:IS_IN_PANGENOME]->(p2:Pangenome)
+OPTIONAL MATCH (f1)<-[:IS_IN_FAMILY]-(:Gene)-[:IS_IN_RGP]->(:RGP)-[:IS_IN_SPOT]->(:Spot)
+OPTIONAL MATCH (f2)<-[:IS_IN_FAMILY]-(:Gene)-[:IS_IN_RGP]->(:RGP)-[:IS_IN_SPOT]->(:Spot)
+WHERE f1<>f2 AND p1<>p2
+RETURN DISTINCT f1.name as Family1, f2.name as Family2
+ORDER BY Family1, Family2
 ```
+
+La requête retourne ***13 344* tuples**, dont les *3 premiers* vous sont donnés ci-dessous:
+
+|Family1                 |Family2                 |
+|------------------------|------------------------|
+|A1S_0008                |ABTW07_0004             |
+|A1S_0233                |ABR2090_RS17050         |
+|A1S_0374                |ABR2090_RS16370         |
+| ... | ... |
+
+### Requête 4
+
+```cypher
+MATCH (f1:Family)-[r:IS_SIMILAR]-(f2:Family)
+WHERE r.identity>0.8 AND r.coverage>0.8
+MATCH (f1)-[:HAS_PARTITION]->(p1:Partition)
+MATCH (f2)-[:HAS_PARTITION]->(p2:Partition)
+RETURN f1.name as Family1,
+       f2.name as Family2,
+       p1.partition as Part1,
+       p2.partition as Part2,
+       f1.annotation as Annot1,
+       f2.annotation as Annot2
+ORDER BY r.identity, r.coverage
+LIMIT 1
+```
+
+La requête ne retourne **aucun résultat**. Ce comportement peut être expliqué par le fait qu'il n'existe aucun `identity` ou `coverage` supérieur à 0.8 (la valeur maximum pour ces propriétés est 0.8). Avec des égalités autorisés, on a *564* tuples, dont la 1ère est:
+
+|Family1      |Family2                 |Part1|Part2|Annot1|Annot2|
+|-------------|------------------------|-----|-----|------|------|
+|CTZ18_RS12990|GCA_001472555.1_CDS_4314|shell|shell|TEM-1 |TEM-1 |
 
 ## Analyse expérimentale
 ---
