@@ -13,25 +13,25 @@ aliases: ["TP sur Neo4j et Cypher"]
 ### 1) Les noms de toutes les étiquettes distinctes associées aux nœuds
 
 ```cypher
-CALL db.labels()
+CALL db.labels()
 ```
 
 Ou
 
 ```cypher
-MATCH (n) RETURN DISTINCT labels(n) as Labels
+MATCH (n) RETURN DISTINCT labels(n) as Labels
 ```
 
 ### 2) Les noms de toutes les étiquettes distinctes associées aux arêtes
 
 ```cypher
-CALL db.relationshipTypes()
+CALL db.relationshipTypes()
 ```
 
 Ou
 
 ```cypher
-MATCH (a)-[r]-(b) RETURN DISTINCT type(r) as Relations
+MATCH (a)-[r]-(b) RETURN DISTINCT type(r) as Relations
 ```
 
 ### 3) Les propriétés associées
@@ -39,20 +39,20 @@ MATCH (a)-[r]-(b) RETURN DISTINCT type(r) as Relations
 #### Pour les **Nœuds**:
 
 ```cypher
-MATCH (n) 
-WITH labels(n) AS labels, keys(n) AS keys
-UNWIND labels AS label
-UNWIND keys AS key
-RETURN DISTINCT label, collect(DISTINCT key) AS properties
-ORDER BY label
+MATCH (n) 
+WITH labels(n) AS labels, keys(n) AS keys
+UNWIND labels AS label
+UNWIND keys AS key
+RETURN DISTINCT label, collect(DISTINCT key) AS properties
+ORDER BY label
 ```
 
 #### Pour les **Relations**:
 
 ```cypher
-MATCH ()-[r]-()
-RETURN DISTINCT type(r) as Relation, keys(r) as Keys
-ORDER BY Relation
+MATCH ()-[r]-()
+RETURN DISTINCT type(r) as Relation, keys(r) as Keys
+ORDER BY Relation
 ```
 
 ### 4) La représentation sous forme de diagramme
@@ -84,9 +84,9 @@ RETURN pg.name as Nom, count(f) as Count
 ### 2)
 
 ```cypher
-MATCH (pg:Pangenome)<-[:IS_IN_PANGENOME]-(f:Family)-[:HAS_PARTITION]->(p:Partition)
-WHERE f.annotation IS NOT null AND p.partition IN ['cloud', 'shell']
-RETURN pg.name as Nom, count(f) as Count
+MATCH (pg:Pangenome)<-[:IS_IN_PANGENOME]-(f:Family)-[:HAS_PARTITION]->(p:Partition)
+WHERE f.annotation IS NOT null AND p.partition IN ['cloud', 'shell']
+RETURN pg.name as Nom, count(f) as Count
 ```
 
 |Nom                      |Count|
@@ -97,9 +97,9 @@ RETURN pg.name as Nom, count(f) as Count
 ### 3)
 
 ```cypher
-MATCH (s:Spot)<-[:IS_IN_SPOT]-(n:RGP)<-[:IS_IN_RGP]-(g:Gene)-[:IS_IN_FAMILY]->(f:Family)
-WHERE f.annotation IS NOT null
-RETURN n.name as Nom, count(n.name) as Count, s.name as Hotspot
+MATCH (s:Spot)<-[:IS_IN_SPOT]-(n:RGP)<-[:IS_IN_RGP]-(g:Gene)-[:IS_IN_FAMILY]->(f:Family)
+WHERE f.annotation IS NOT null
+RETURN n.name as Nom, count(n.name) as Count, s.name as Hotspot
 ```
 
 Cette requête retourne *1376* tuples, dont les 3 premiers vous sont donnés ci-dessous:
@@ -111,3 +111,68 @@ Cette requête retourne *1376* tuples, dont les 3 premiers vous sont donnés ci-
 |CP020089.1_RGP_0     |1    |135    |
 | ... | ... | ... |
 
+### 4)
+
+```cypher
+
+```
+
+### 5)
+
+```cypher
+
+```
+
+### 6)
+
+```cypher
+
+```
+
+## Les requêtes inter-pangenomiques
+---
+
+### 1)
+
+```cypher
+
+```
+
+### 2)
+
+```cypher
+
+```
+
+### 3)
+
+```cypher
+
+```
+
+### 4)
+
+```cypher
+
+```
+
+## Analyse expérimentale
+---
+
+### 1)
+
+```cypher
+
+```
+
+### 2)
+
+```cypher
+
+```
+
+### 3)
+
+```cypher
+
+```
