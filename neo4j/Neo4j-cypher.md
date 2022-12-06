@@ -193,22 +193,23 @@ ORDER BY Name
 
 ```cypher
 MATCH (f1:Family)-[:IS_SIMILAR]-(f2:Family)
+WHERE f1<>f2
 MATCH (f1)-[:IS_IN_PANGENOME]->(p1:Pangenome)
 MATCH (f2)-[:IS_IN_PANGENOME]->(p2:Pangenome)
-OPTIONAL MATCH (f1)<-[:IS_IN_FAMILY]-(:Gene)-[:IS_IN_RGP]->(:RGP)-[:IS_IN_SPOT]->(:Spot)
-OPTIONAL MATCH (f2)<-[:IS_IN_FAMILY]-(:Gene)-[:IS_IN_RGP]->(:RGP)-[:IS_IN_SPOT]->(:Spot)
-WHERE f1<>f2 AND p1<>p2
+WHERE p1<>p2
+MATCH (f)<-[:IS_IN_FAMILY]-(:Gene)-[:IS_IN_RGP]->(:RGP)-[:IS_IN_SPOT]->(:Spot)
+WHERE f=f1 OR f=f2
 RETURN DISTINCT f1.name as Family1, f2.name as Family2
 ORDER BY Family1, Family2
 ```
 
-La requête retourne ***13 344* tuples**, dont les *3 premiers* vous sont donnés ci-dessous:
+La requête retourne ***722* tuples**, dont les *3 premiers* vous sont donnés ci-dessous:
 
-|Family1                 |Family2                 |
-|------------------------|------------------------|
-|A1S_0008                |ABTW07_0004             |
-|A1S_0233                |ABR2090_RS17050         |
-|A1S_0374                |ABR2090_RS16370         |
+|Family1                 |Family2                  |
+|------------------------|-------------------------|
+|A1S_2475                |GCA_012062485.1_CDS_4153 |
+|A388_RS01365            |GCA_002982195.1_CDS_0607 |
+|A388_RS01385            |GCA_002278355.1_CDS_3234 |
 | ... | ... |
 
 ### Requête 4
