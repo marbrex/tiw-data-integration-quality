@@ -280,20 +280,62 @@ La requête ne retourne **aucun résultat**. Ce comportement peut être expliqu�
 ## Analyse expérimentale
 ---
 
-### 1)
+### 1) Mesures du temps d'exécution des requêtes
+
+Les mesures ont été effectuées par **Neo4J Desktop Browser**.
+
+<div style="display: flex; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
+  <div style="margin-right: 20px">
+    <p><strong>Section III</strong></p>
+    <table>
+      <tbody>
+        <tr><th>Requête</th><th>Temps d'exécution (en ms)</th></tr>
+        <tr><td>1</td><td>45</td></tr>
+        <tr><td>2</td><td>33</td></tr>
+        <tr><td>3</td><td>7</td></tr>
+        <tr><td>4</td><td>900</td></tr>
+        <tr><td>5</td><td>74</td></tr>
+        <tr><td>6</td><td>16</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-left: 20px">
+    <p><strong>Section IV</strong></p>
+    <table>
+      <tbody>
+        <tr><th>Requête</th><th>Temps d'exécution (en ms)</th></tr>
+        <tr><td>1</td><td>7</td></tr>
+        <tr><td>2</td><td>22</td></tr>
+        <tr><td>3</td><td>45 939</td></tr>
+        <tr><td>4</td><td>13</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+### 2) Diagrammes
+
+#### Requêtes de la Section III
+
+![](../assets/tiw-iqd-neo4j-perf-1.png)
+
+#### Requêtes de la Section IV
+
+![](../assets/tiw-iqd-neo4j-perf-2.png)
+
+### 3) Observations
+
+La requête IV.3 est la plus longue à s'exécuter parmi les toutes. Cela met du temps à cause de la clause `MATCH` suivante, responsable pour la condition "au moins une famille est dans un `Spot`":
 
 ```cypher
-
+MATCH (f)<-[:IS_IN_FAMILY]-(:Gene)-[:IS_IN_RGP]->(:RGP)-[:IS_IN_SPOT]->(:Spot)
+WHERE f=f1 OR f=f2
 ```
 
-### 2)
+#### Caractéristiques de mon PC
 
-```cypher
+C'est un ordinateur portable **ASUS Vivobook 15 X571GT** avec les caractéristiques suivantes:
 
-```
-
-### 3)
-
-```cypher
-
-```
+- **CPU:** Intel(R) Core(TM) i5-9300H CPU @ 2.40GHz, 2400 Mhz, 4 Core(s), 8 Logical Processor(s)
+- **RAM:** 8 GBs, 2667 MHz, in Dual Channel
+- **OS:** Windows 11
